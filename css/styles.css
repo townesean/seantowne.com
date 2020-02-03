@@ -1,0 +1,83 @@
+
+body {
+    background-color: white;
+    color: grey;
+}
+
+header, main, nav, footer {
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 4em;
+    margin-bottom: 0px;
+}
+
+nav a {
+    padding: 15px;
+    padding-bottom: 4px;
+    font-size: 1.8em;
+    text-decoration: none;
+    color: grey;
+}
+
+nav a:hover {
+    border-bottom:2px orange solid;
+    font-size:2em;
+    transition:.9s;
+}
+
+
+
+#BioPic, #MyBio {
+    float: left;
+}
+
+#MyBio {
+    text-align: left;
+}
+
+footer {
+    clear: both;
+}
+
+#footerText {
+    font-size: small;
+    color: blue;
+}
+
+table {
+    margin: 0px auto;
+}
+
+td {
+    padding-right: 10px;
+    font-size: 1.3em;
+}
+
+td strong {
+    color: orange;
+}
+
+#table-header {
+    background-color: #351a00;
+}
+
+.table-row {
+    background-color: #753900;
+}
+
+ul {
+    text-align: left;
+    padding-left: 200px;
+}
+
+.hobby {
+    color: brown;
+}
+
+iframe {
+    margin: 0px auto;
+    display: block;
+}
