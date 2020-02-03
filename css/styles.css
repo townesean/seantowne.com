@@ -81,3 +81,7 @@ iframe {
     margin: 0px auto;
     display: block;
 }
+
+#test-canvas {
+    border:1px solid #000000;
+}
