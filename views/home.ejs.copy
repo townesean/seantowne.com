@@ -1,0 +1,40 @@
+<%- include('templates/header.ejs') -%>
+	<div id="content">
+		<div id="greeting">
+			<div id="pictureDiv">    
+	    		<img id="picture" src="img/ProfilePicture.jpg"/>
+	    	</div>
+	    	<h1 id="myname">Sean Towne</h1>
+	    </div>
+
+	    <div id="i_love_yulia">
+	    	<!--
+	    	<p>
+  <a data-toggle="collapse" href="#collapseExample">
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-target
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+  </div>
+</div>
+-->
+	    	<h3 data-toggle="collapse" href="#collapseExample">Contact</h3>
+	    	<div class="collapse" id="collapseExample">
+	    		<p>seanmichaeltowne@gmail.com</p>
+	    		<p>1-(714)-349-2671</p>
+	    	</div>
+	    	<h3>Hire Me</h3>
+	    	<h3>Projects</h3>
+	    	<h3>Experience</h3>
+	    	<h3>Education</h3>
+	    </div>
+
+	</div>
+
+
+<%- include('templates/footer.ejs') -%>
