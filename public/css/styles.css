@@ -10087,16 +10087,31 @@ p.lead {
 
 /* Added by me */
 /*****************************************/
-.resumeTip .resumeTipText{
-  visibility: hidden;
-  position: absolute;
+.resumeTip {
+  position: relative;
+  display: inline-block;
 }
-.resumeTip:hover .resumeText{
-  visibility: visible;
-  width: 120px;
+
+.resumeTip .resumeTipText {
+  visibility: hidden;
+  width: 130px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: 12px;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
   bottom: 100%;
   left: 50%;
-  margin-left: -60px;
+  margin-left: -70px;
+}
+
+.resumeTip:hover .resumeTipText {
+  visibility: visible;
 }
 /*****************************************/
 .dev-icons {
