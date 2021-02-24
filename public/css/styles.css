@@ -10081,9 +10081,24 @@ p.lead {
   margin-right: 0;
 }
 .social-icons .social-icon:hover {
+  
   background-color: var(--myColor);
 }
 
+/* Added by me */
+/*****************************************/
+.resumeTip .resumeTipText{
+  visibility: hidden;
+  position: absolute;
+}
+.resumeTip:hover .resumeText{
+  visibility: visible;
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+/*****************************************/
 .dev-icons {
   font-size: 3rem;
 }
