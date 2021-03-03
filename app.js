@@ -1,6 +1,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+const path = require("path");
 var app = express();
+var React = require('react');
+
 
 // set the template engine to ejs
 app.set('view engine', 'ejs');
@@ -21,13 +24,11 @@ app.get("/home", function(req, res){
     res.render("home.ejs");
 });
 
-
-// handle the login page
-app.get("/login", function(req, res){
-    
-    // this is an example of how you can send data down to the client with the ejs files
-    res.render("login.ejs");
-});
+app.get("/ticktacktoe", function(req, res){
+	file = path.join(__dirname, "public", "build", "index.html");
+	console.log(file);
+	res.sendFile(file);
+})
 
 
 // anything that hasn't matched a defined route is caught here
@@ -37,6 +38,6 @@ app.get("/*", function(req, res){
 
 // listens for http requests
 // port 3000 is for C9, port 8080 is for Heroku
-app.listen(process.env.PORT || 3000 || 8080, function(){
+app.listen(process.env.PORT || 8080, function(){
     console.log("Server is running");
 });
