@@ -24,12 +24,9 @@ app.get("/home", function(req, res){
     res.render("home.ejs");
 });
 
-app.get("/ticktacktoe", function(req, res){
-	file = path.join(__dirname, "public", "build", "index.html");
-	console.log(file);
-	res.sendFile(file);
+app.get("/projects", function(req, res){
+	res.render("projects.ejs");
 })
-
 
 // anything that hasn't matched a defined route is caught here
 app.get("/*", function(req, res){
