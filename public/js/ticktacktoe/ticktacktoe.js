@@ -24,23 +24,20 @@ class Board extends React.Component {
 	}
 
 	render() {
+			
+		let board = [];
+		let l = 3
+		for (let i = 0; i < l; i  ++){
+			let row = [];
+			for (let j = 0; j < l; j ++){
+				row.push(this.renderSquare( j + l * i ));
+			}
+			board.push(<div className="board-row">{row}</div>)
+		}
+
 		return (
 			<div>
-				<div className="board-row">
-					{this.renderSquare(0)}
-					{this.renderSquare(1)}
-					{this.renderSquare(2)}
-				</div>
-				<div className="board-row">
-					{this.renderSquare(3)}
-					{this.renderSquare(4)}
-					{this.renderSquare(5)}
-				</div>
-				<div className="board-row">
-					{this.renderSquare(6)}
-					{this.renderSquare(7)}
-					{this.renderSquare(8)}
-				</div>
+				{board}
 			</div>
 		);
 	}
@@ -53,6 +50,7 @@ class Game extends React.Component {
 			history: [
 				{
 					squares: Array(9).fill(null),
+					lastMove: null,
 				}
 			],
 			stepNumber: 0,
@@ -66,14 +64,18 @@ class Game extends React.Component {
 		const winner = calculateWinner(current.squares);
 
 		const moves = history.map((step, move) => {
-			console.log(step);
-			console.log(step%2);
+			const bold = this.state.stepNumber == move;
+			const lastMove = step.lastMove;
 			const desc = move ?
-				'Go to move #' + move :
+				'Go to move #' + move + ': ' + lastMove:
 				'Go to game start';
 			return (
 				<li key={move}>
-					<button onClick={() => this.jumpTo(move)}>{desc}</button>
+					<button onClick={() => this.jumpTo(move)}>
+						
+						{bold ? <b>{desc}</b> : desc}
+						
+					</button>
 				</li>
 			);
 		});
@@ -112,13 +114,19 @@ class Game extends React.Component {
 		const history = this.state.history.slice(0, this.state.stepNumber+1);
 		const current = history[history.length-1];
 		const squares = current.squares.slice();
+
 		if ( calculateWinner(squares) || squares[i] ){
 			return;
 		}
-		squares[i] = (this.state.xIsNext ? 'X' : 'O');
+		const letter = (this.state.xIsNext ? 'X' : 'O');
+		squares[i] = letter;
+		const row = (3-Math.floor(i/3));
+		const col = (i % 3) + 1;
+		const lastMove = letter + "(" + col + ", " + row + ")";
 		this.setState({
 			history: history.concat([{
 				squares: squares,
+				lastMove: lastMove,
 			}]),
 			stepNumber: history.length,
 			xIsNext: !this.state.xIsNext,
