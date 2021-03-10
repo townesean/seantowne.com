@@ -40,8 +40,8 @@
                         	<a class="social-icon" href="/assets/Resume2021.pdf" download><i class="fas fa-file-pdf"></i></a>
                         	<span class="resumeTipText">Download Resume</span>
                         </div>
-                        <a class="social-icon" href="/react_apps/ticktacktoe/ticktacktoe.html"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="social-icon" href="#"><i class="fab fa-github"></i></a>
+                        <a class="social-icon" href="https://www.linkedin.com/in/sean-towne-3a73b611a/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="social-icon" href="https://github.com/townesean" target="_blank"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
             </section>
@@ -52,35 +52,54 @@
                     <h2 class="mb-5">Experience</h2>
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
-                            <h3 class="mb-0">Senior Web Developer</h3>
-                            <div class="subheading mb-3">Intelitec Solutions</div>
+                            <h3 class="mb-0">Supplemental Instruction Leader</h3>
+                            <div class="subheading mb-3">Santiago Canyon College</div>
                             <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">March 2013 - Present</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">January 2013 - ???</span></div>
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
-                            <h3 class="mb-0">Web Developer</h3>
-                            <div class="subheading mb-3">Intelitec Solutions</div>
+                            <h3 class="mb-0">Contributor on the STOQS project - MBARI</h3>
+                            <div class="subheading mb-3">Capstone - CSU Monterey Bay</div>
                             <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">December 2011 - March 2013</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">August 2020 - December 2020</span></div>
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
-                            <h3 class="mb-0">Junior Web Designer</h3>
-                            <div class="subheading mb-3">Shout! Media Productions</div>
+                            <h3 class="mb-0">STEM CELL Instructor</h3>
+                            <div class="subheading mb-3">Monterey Peninsula College</div>
                             <p>Podcasting operational change management inside of workflows to establish a framework. Taking seamless key performance indicators offline to maximise the long tail. Keeping your eye on the ball while performing a deep dive on the start-up mentality to derive convergence on cross-platform integration.</p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">July 2010 - December 2011</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">January 2018 - May 2018</span></div>
                     </div>
-                    <div class="d-flex flex-column flex-md-row justify-content-between">
-                        <div class="flex-grow-1">
-                            <h3 class="mb-0">Web Design Intern</h3>
-                            <div class="subheading mb-3">Shout! Media Productions</div>
-                            <p>Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.</p>
+
+                    <script type="text/javascript">
+                        function toggleMoreLessWork() {
+                            //console.log(display);
+                            $('#more-work-experience').slideToggle(200, ()=> {
+                                var display = $("#more-work-experience").css("display");
+                                var moreLess = display == "none" ? 'More' : 'Less';
+                                var message = "Show " + moreLess + " Work Experience";
+                                $('#show-more-less-work').html(message);
+                            });
+                        }
+                    </script>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <a id="show-more-less-work" class="subheading mb-3" onClick="toggleMoreLessWork();">Show More Work Experience</a>
+                    </div>
+
+                    <div id="more-work-experience" style="display:none">
+                        <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                            <div class="flex-grow-1">
+                                <h3 class="mb-0">Contributor on the STOQS project - MBARI</h3>
+                                <div class="subheading mb-3">Capstone - CSU Monterey Bay</div>
+                                <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
+                            </div>
+                            <div class="flex-shrink-0"><span class="text-primary">August 2020 - December 2020</span></div>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">September 2008 - June 2010</span></div>
                     </div>
                 </div>
             </section>
@@ -93,7 +112,7 @@
                         <div class="flex-grow-1">
                             <h3 class="mb-0">California State University Monterey Bay</h3>
                             <div class="subheading mb-3">Bachelor of Science</div>
-                            <div>Computer Science - Software Engineering & Data Science</div>
+                            <div><p>Computer Science - Software Engineering & Data Science</p></div>
                             <p>Dual Concentration - Deans List</p>
                         </div>
                         <div class="flex-shrink-0"><span class="text-primary">August 2015 - December 2020</span></div>
@@ -105,16 +124,17 @@
                             <div>Computer Science</div>
                             <p></p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">August 2015 - December 2020</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">June 2008 - May 2015</span></div>
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <h3 class="mb-0">Monterey Peninsula College</h3>
                             <div class="subheading mb-3">Associate of Arts</div>
-                            <div>Economics</div>
+                            <div><p>Economics</p></div>
                             <p>Deans Highest Honors</p>
+                            <p>GPA: 3.74</p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">August 2015 - December 2020</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">August 2018 - December 2019</span></div>
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-between">
                         <div class="flex-grow-1">
@@ -122,7 +142,7 @@
                             <div class="subheading mb-3">High School Diploma</div>
                             <p></p>
                         </div>
-                        <div class="flex-shrink-0"><span class="text-primary">August 2002 - May 2006</span></div>
+                        <div class="flex-shrink-0"><span class="text-primary">August 2007 - May 2011</span></div>
                     </div>
                 </div>
             </section>
