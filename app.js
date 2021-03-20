@@ -28,8 +28,10 @@ app.get("/projects", function(req, res){
 	res.render("projects.ejs");
 });
 
-app.get("/projects/ticktacktoe/", function(req, res){
-	res.render("ticktacktoe.ejs");
+app.get("/projects/:project", function(req, res){
+	var project = req.params.project;
+	console.log(project);
+	res.render(project+".ejs");
 })
 
 // anything that hasn't matched a defined route is caught here
