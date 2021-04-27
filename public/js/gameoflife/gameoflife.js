@@ -175,7 +175,7 @@ class Game extends React.Component{
 			lifeMatrix: this.nextMatrix()
 		}, ()=>{
 			if (this.state.running){
-				setTimeout(()=>{this.run()}, 75);
+				setTimeout(()=>{this.run()}, 10);
 			}
 		});
 	}
