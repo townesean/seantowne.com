@@ -89,7 +89,7 @@ class Game extends React.Component{
 		}
 		
 		let colors = {
-			aliveColor: "red",
+			aliveColor: "#90c482",
 			deadColor: "white",
 		}
 
@@ -169,6 +169,8 @@ class Game extends React.Component{
 		return next;
 	}
 
+	interval = null;
+
 	run(){
 		//console.log("running");
 		this.setState({ 
@@ -179,19 +181,40 @@ class Game extends React.Component{
 			}
 		});
 	}
+
+	run_test(){
+		//this.setState({running: true});
+
+		const interval = setInterval(() => {
+			this.setState({
+				lifeMatrix: this.nextMatrix()
+			})
+		}, 1);
+
+		console.log("run");
+		return interval;
+	}
 	pause(){
+		clearInterval(this.interval);
+		//this.setState({running:false});
 		console.log("paused");
 	}
 
 	handleRunningPauseClick(){
+		//let running = this.state.running;
+		//if (running) { this.pause() }
+		//else { this.run_test() }
+		
 		let running = this.state.running;
 		this.setState({ running: !running }, ()=>{
 			if ( this.state.running ){
-				this.run();
+				//this.run();
+				this.interval = this.run_test();
 			} else {
 				this.pause();
 			}
 		});
+		
 		
 	}
 
