@@ -25,7 +25,7 @@
             <section class="resume-section" id="about">
                 <div class="resume-section-content">
                     <h3>Please excuse the mess</h3>
-                    <h4 style="color: red;">This site is still inder construction</h4>
+                    <h4 style="color: red;">This site is still under construction</h4>
                     <br><br><br>
                     <h1 class="mb-0">
                         Sean <span class="text-primary">Towne</span>
@@ -194,11 +194,14 @@
 
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
-                            <a href="/projects/gameoflife" target="_blank"><h3 class="mb-0">Game Of Life</h3></a>
+                            <!--<a href="/projects/gameoflife" target="_blank"><h3 class="mb-0">Game Of Life</h3></a>-->
+                            <a onclick="$('#gameOfLifeApp').slideToggle(200);"><h3 class="mb-0">Game Of Life</h3></a>
                             <div class="subheading mb-3">Tools: React</div>
                             <p><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Conways Game of Life</a> is a <i>game</i> where cells in a grid live or die based on simple rules. It is an example of a cellular automaton. I wrote this as a way to familiarize myself with the React JavaScript Library.</p>
                         </div>
                     </div>
+
+                    <div id="gameOfLifeApp" style="display:none;">
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
                         <div class="flex-grow-1">
                             <!-- Probably delete later -->
@@ -219,6 +222,7 @@
                             <script src="/js/gameoflife/gameoflife.js" type="text/babel"></script>
                             <!-- end probably delete later -->
                         </div>
+                    </div>
                     </div>
                     
 

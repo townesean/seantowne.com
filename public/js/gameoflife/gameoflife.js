@@ -227,10 +227,9 @@ class Game extends React.Component{
 
 	handleClearClick(){
 		console.log("clear");
-		this.setState({
-			lifeMatrix: Array(this.state.lifeMatrix.length).fill(null).map(x => Array(this.state.lifeMatrix[0].length).fill(false)),
-			running: false,
-		})
+		this.pause();
+		let blank = Array(this.state.lifeMatrix.length).fill(null).map(x => Array(this.state.lifeMatrix[0].length).fill(false));
+		this.setState({lifeMatrix: blank});
 	}
 
 	handleSquareClick(x, y){
