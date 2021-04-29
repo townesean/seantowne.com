@@ -1,6 +1,14 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+
+.sidenav {
+  height: 100%;
+  width: 275px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #90c482;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
 
 ol, ul {
@@ -44,6 +52,7 @@ ol, ul {
 .game {
   display: flex;
   flex-direction: row;
+  margin: auto;
 }
 
 .game-info {

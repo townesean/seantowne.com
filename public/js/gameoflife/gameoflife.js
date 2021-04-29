@@ -183,24 +183,25 @@ class Game extends React.Component{
 	}
 
 	run_test(){
-		//this.setState({running: true});
+		this.setState({running: true});
 
-		const interval = setInterval(() => {
+		this.interval = setInterval(() => {
 			this.setState({
 				lifeMatrix: this.nextMatrix()
 			})
-		}, 1);
+		}, 100);
 
 		console.log("run");
-		return interval;
+		//return interval;
 	}
 	pause(){
 		clearInterval(this.interval);
-		//this.setState({running:false});
+		this.setState({running:false});
 		console.log("paused");
 	}
 
 	handleRunningPauseClick(){
+		/*
 		//let running = this.state.running;
 		//if (running) { this.pause() }
 		//else { this.run_test() }
@@ -214,7 +215,13 @@ class Game extends React.Component{
 				this.pause();
 			}
 		});
-		
+		*/
+		let running = this.state.running;
+		if (running){
+			this.pause();
+		}else{
+			this.run_test();
+		}
 		
 	}
 
