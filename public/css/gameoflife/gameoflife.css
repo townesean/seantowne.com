@@ -1,43 +1,21 @@
 
-.sidenav {
-  height: 100%;
-  width: 275px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #90c482;
-  overflow-x: hidden;
-  padding-top: 20px;
-}
-
-ol, ul {
-  padding-left: 30px;
-}
-
 .board-row:after {
-  clear: both;
+  clear: left;
   content: "";
   display: table;
 }
 
-.status {
-  margin-bottom: 10px;
-}
 
 .square {
   background: #fff;
   border: 1px solid rgba(111,111,111,0.1);
   
   float: left;
-  font-size: 24px;
-  font-weight: bold;
   line-height: 34px;
   height: 10px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
-  text-align: center;
   width: 10px;
 }
 
@@ -45,16 +23,15 @@ ol, ul {
   outline: none;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
+#gol-board{
+  
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
-  margin: auto;
+#gol-controls{
+
 }
 
-.game-info {
-  margin-left: 20px;
+#gol-game{
+
 }
+
