@@ -3,9 +3,10 @@
 
 class Square extends React.Component{
 
+
 	shouldComponentUpdate(nextProps, nextState) {
 		
-		return ( this.props.alive != nextProps.alive)
+		return ( this.props.alive != nextProps.alive )
 	}
 
 	render(){
@@ -101,25 +102,19 @@ class Game extends React.Component{
 	constructor(props){
 		super(props);
 
-		/*
+		
 		this.width = 90;
 		this.height = 54;
-		*/
-		this.width = 80;
-		this.height = 48;
-
-		
-
 
 		var lifeMatrix = this.lifeMatrix(true);
 		
-		let colors = {
-			aliveColor: "#90c482",
-			deadColor: "white",
-		}
+		
 
 		this.state = {
-			colors: colors,
+			colors: {
+				aliveColor: "#90c482",
+				deadColor: "white",
+			},
 			lifeMatrix: lifeMatrix,
 			running: false,
 		}
@@ -196,7 +191,7 @@ class Game extends React.Component{
 	percentDelay = 0.5;
 	handleSpeedChange(event){
 		let percentDelay = event.target.value * 0.01;
-		console.log(`Speed changed to ${percentDelay*100}%`);
+		console.log(`Delay changed to ${this.delay*percentDelay}`);
 		this.percentDelay = percentDelay;
 		if (this.state.running){
 			clearInterval(this.interval);
