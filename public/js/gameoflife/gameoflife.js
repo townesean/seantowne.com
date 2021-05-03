@@ -2,6 +2,12 @@
 
 
 class Square extends React.Component{
+
+	shouldComponentUpdate(nextProps, nextState) {
+		
+		return ( this.props.alive != nextProps.alive)
+	}
+
 	render(){
 		const color = (
 			this.props.alive ? 
@@ -99,8 +105,8 @@ class Game extends React.Component{
 		this.width = 90;
 		this.height = 54;
 		*/
-		this.width = 40;
-		this.height = 24;
+		this.width = 80;
+		this.height = 48;
 
 		
 
