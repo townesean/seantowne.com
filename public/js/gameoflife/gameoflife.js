@@ -404,9 +404,15 @@ class Controls extends React.Component{
 				<button
 					onClick = {()=>this.props.onPlayPauseClick()}
 				>{runPause}</button>
+
 				<button
 					onClick = {()=>this.props.onClearClick()}
 				>Clear</button>
+
+				<button
+					onClick = {()=>this.props.onRandom()}
+				>Random</button>
+
 				<input 
 						type="range" 
 						min="10" 
@@ -415,7 +421,7 @@ class Controls extends React.Component{
 						defaultValue="500"
 						onMouseUp={(event)=>this.props.onSpeedChange(event)}
 						>
-					</input>
+				</input>
 			</div>
 		);
 	}
@@ -615,6 +621,11 @@ class Game extends React.Component{
 		*/
 	}
 
+	handleRandomClick(){
+		this.bitmap = this.makeEmptyBitmap(true);
+		this.setState({cells:this.getCells()});
+	}
+
 	render(){
 		return(
 			<div>
@@ -631,6 +642,7 @@ class Game extends React.Component{
 					onPlayPauseClick = {()=>this.handlePlayPauseClick()}
 					onClearClick = {()=>this.handleClearClick()}
 					onSpeedChange = {(event)=>this.handleSpeedChange(event)}
+					onRandom = {()=>this.handleRandomClick()}
 				/>
 			</div>
 		);
