@@ -1,15 +1,18 @@
 
 
-
+/*
 class Square extends React.Component{
 
 
+	
 	shouldComponentUpdate(nextProps, nextState) {
 		
 		return ( this.props.alive != nextProps.alive )
 	}
+	
 
 	render(){
+		//if (Math.random() > 0.9) console.log("renderSquare")
 		const color = (
 			this.props.alive ? 
 			this.props.colors.aliveColor : 
@@ -30,34 +33,43 @@ class Square extends React.Component{
 
 class Board extends React.Component{
 	renderSquare(x, y){
+		
+
 		var alive = this.props.lifeMatrix[y][x].alive;
 
-		var key = ("(" + x.toString() + ", " + y.toString() + ")");
+		var key = `( ${x} , ${y} )`;
 		return(
 			<Square
 				key={key}
 				alive={alive}
-				onClick={()=> this.props.onClick(x, y)}
+				onClick={()=>this.props.onClick(x, y)}
 				colors={this.props.colors}
 			>
 			</Square>
 		);
 	}
 
-		render(){
-			const bh = this.props.lifeMatrix.length;
-			const bw = this.props.lifeMatrix[0].length;
+	makeBoard(){
 
-			let board = [];
-			for ( let i = 0; i < bh; i ++){
-				let row = [];
-				for ( let j = 0; j < bw; j ++){
-					row.push(this.renderSquare(j, i));
-				}
-				var key = "row: " + i.toString()
-				board.push(<div key={key} className="board-row">{row}</div>);
+	}
+
+	render(){
+		const t = performance.now();
+
+		const bh = this.props.lifeMatrix.length;
+		const bw = this.props.lifeMatrix[0].length;
+
+		let board = [];
+		for ( let i = 0; i < bh; i ++){
+			let row = [];
+			for ( let j = 0; j < bw; j ++){
+				row.push(this.renderSquare(j, i));
 			}
-
+			var key = "row: " + i.toString()
+			board.push(<div key={key} className="board-row">{row}</div>);
+		}
+		const t0 = performance.now();
+		console.log(`Board Render: ${t0-t}`);
 		return(
 			<div>
 				{board}
@@ -68,13 +80,13 @@ class Board extends React.Component{
 
 class Controls extends React.Component{
 	render(){
-		let running = this.props.running ? 'Pause' : 'Run';
+		let pauseRun = this.props.running ? 'Pause' : 'Run';
 		return(
 			<div>
 
 				<button 
 					onClick = {()=>this.props.onRunningPauseClick()}
-					>{running}
+					>{pauseRun}
 				</button>
 
 				<button 
@@ -112,7 +124,7 @@ class Game extends React.Component{
 
 		this.state = {
 			colors: {
-				aliveColor: "#90c482",
+				aliveColor: #90c482,
 				deadColor: "white",
 			},
 			lifeMatrix: lifeMatrix,
@@ -120,18 +132,15 @@ class Game extends React.Component{
 		}
 	}
 
-	UNSAFE_componentWillMount(){
-		
-	}
-
 	render(){
+		
 		return (
 			<div id="gol-game">
 				<div id="gol-board">
 					<Board 
 						colors = {this.state.colors}
 						lifeMatrix = {this.state.lifeMatrix}
-						onClick = {(x, y)=>this.handleSquareClick(x,y)}
+						onClick = {(x,y)=>this.handleSquareClick(x,y)}
 					/>
 				</div>
 
@@ -144,8 +153,7 @@ class Game extends React.Component{
 					/>
 				</div>
 			</div>
-		);
-			
+		);	
 	}
 
 	increment_decrement_Neighbors(y, x, matrix, incrementOrDecrement){
@@ -191,7 +199,7 @@ class Game extends React.Component{
 	percentDelay = 0.5;
 	handleSpeedChange(event){
 		let percentDelay = event.target.value * 0.01;
-		console.log(`Delay changed to ${this.delay*percentDelay}`);
+		//console.log(`Delay changed to ${this.delay*percentDelay}`);
 		this.percentDelay = percentDelay;
 		if (this.state.running){
 			clearInterval(this.interval);
@@ -230,12 +238,12 @@ class Game extends React.Component{
 	}
 
 	nextMatrix(){
-		console.log("nextMatrix");
+		//console.log("nextMatrix");
 		let current = this.state.lifeMatrix;
 		const t0 = performance.now();
 		let next = this.deepCopyLifeMatrix(current);
 		const t1 = performance.now();
-		console.log(`Copy Matrix: ${t1-t0}`);
+		//console.log(`Copy Matrix: ${t1-t0}`);
 		
 		const t00 = performance.now();
 		for (let i = 0; i < current.length; i ++){
@@ -243,17 +251,7 @@ class Game extends React.Component{
 				let cell = current[i][j];
 				let nc = cell.neighborCount;
 
-				/*
-				// Cell is dead and stays dead (No Change)
-				if(!cell.alive && (nc != 3) ) {
-					continue;
-				}
 				
-				// Cell is alive and stays alive (No Change)
-				if ( cell.alive && [2, 3].includes(nc) ){
-					continue;
-				}
-				*/
 				
 				// Cell is alive and becomes dead (Change)
 				if ( cell.alive && ![2, 3].includes(nc) ){
@@ -271,7 +269,7 @@ class Game extends React.Component{
 			}
 		}
 		const t01 = performance.now();
-		console.log(`New State: ${t01-t00}`);
+		//console.log(`New State: ${t01-t00}`);
 		
 		return next;
 	}
@@ -288,19 +286,19 @@ class Game extends React.Component{
 				lifeMatrix: this.nextMatrix()
 			});
 			const t1 = performance.now();
-			console.log(`Render State: ${t1-t}`);
+			console.log(`TOTAL Render time: ${t1-t}`);
 		}, this.delay * this.percentDelay);
-		console.log("run clicked");
+		//console.log("run clicked");
 	}
 
 	pause(){
 		clearInterval(this.interval);
 		this.setState({running:false});
-		console.log("paused clicked");
+		//console.log("paused clicked");
 	}
 
 	handleRunningPauseClick(){
-		console.log("Run/Pause clicked")
+		//console.log("Run/Pause clicked")
 		let running = this.state.running;
 		if (running){
 			this.pause();
@@ -310,19 +308,298 @@ class Game extends React.Component{
 	}
 
 	handleClearClick(){
-		console.log("clear clicked");
+		//console.log("clear clicked");
 		this.pause();
 		//let blank = Array(this.state.lifeMatrix.length).fill(null).map(x => Array(this.state.lifeMatrix[0].length).fill({alive:false, neighborCount:0}));
 		this.setState({lifeMatrix: this.lifeMatrix()});
 	}
 
-	handleSquareClick(x, y){
+	handleSquareClick = (x, y) => {
 		let lifeMatrix = this.state.lifeMatrix;
 		let neighbors = lifeMatrix[y][x].neighborCount;
 		console.log(`Square(${x},${y}) clicked, ${neighbors} neighbors`)
 		lifeMatrix[y][x].alive = !lifeMatrix[y][x].alive;
 		this.increment_decrement_Neighbors(y, x, lifeMatrix, lifeMatrix[y][x].alive);
 		this.setState({lifeMatrix: lifeMatrix});
+	};
+}
+*/
+
+class WorldWindow extends React.Component{
+	constructor(props){
+		super(props);
+		//this.ctx = refs.canvas.getContext("2d");
+		//this.ctx.scale()
+	}
+
+	componentDidUpdate(){
+		this.draw();
+	}
+	componentDidMount(){
+		this.refs.canvas.getContext("2d").scale(2,2);
+		this.draw();
+	}
+	
+	drawCell(x, y, ctx, color){
+		let w = this.props.cellWidthInPixels;
+		let h = this.props.cellHeightInPixels;
+		ctx.beginPath();
+		ctx.lineWidth = 0.05;
+		ctx.rect(x*w, y*h, w, h);
+		ctx.outline = "white";
+		ctx.fillStyle = color;
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	draw(){
+		const t = performance.now();
+    	const ctx = this.refs.canvas.getContext("2d");
+  
+    	let cells = this.props.cells;
+    	let cellsIndex = 0;
+    	let cellsLength = cells.length;
+    	for (let y = 0; y < this.props.windowHeightInCells; y++){
+    		for (let x = 0; x < this.props.windowWidthInCells; x++){
+    			let color = "white";
+    			if ( cellsIndex < cellsLength ){
+    				let cell = cells[cellsIndex];
+    				if (cell[0] == x && cell[1] == y){
+    					color = "#90c482";
+    					cellsIndex++;
+    				}
+    			}
+    			this.drawCell(x, y, ctx, color);
+    		}
+    	}
+		const t1 = performance.now();
+		//console.log(`Draw Time = ${t1-t}`)
+	}
+
+	handleClick(event){
+		//console.log(event)
+		//console.log(canvas)
+		this.props.onSquareClick(event, this.refs.canvas);
+	}
+
+	render(){
+		let w = this.props.windowWidthInCells * this.props.cellWidthInPixels;
+		let h = this.props.windowHeightInCells * this.props.cellHeightInPixels;
+		
+		return(
+			<canvas 
+				ref="canvas" 
+				width={2*w} 
+				height={2*h}
+				onClick = {(event)=>this.handleClick(event)}
+				style={{width:w, height:h}}
+			/>
+		);
+	}
+}
+
+class Controls extends React.Component{
+
+	render(){
+		let runPause = this.props.running? "Pause":"Run";
+		return (
+			<div>
+				<button
+					onClick = {()=>this.props.onRunPauseClick()}
+				>{runPause}</button>
+				<button
+					onClick = {()=>this.props.onClearClick()}
+				>Clear</button>
+			</div>
+		);
+	}
+}
+
+class Game extends React.Component{
+	constructor(props){
+		super(props);
+
+		
+		this.windowWidthInCells = 40
+		this.windowHeightInCells = 28
+		this.cellWidthInPixels = 10
+		this.cellHeightInPixels = 10
+	
+
+		this.bitmap = this.makeEmptyBitmap(true);
+		this.state = {
+			cells: this.getCells(),
+			running: false
+		}
+	}
+
+	makeEmptyBitmap(random){
+		let bitmap = [];
+		for(let y = 0; y < this.windowHeightInCells; y++){
+			bitmap[y] = [];
+			for(let x = 0; x < this.windowWidthInCells; x++){
+				let alive = false;
+				if (random) alive = Math.random() > 0.8;
+				bitmap[y][x] = {
+					alive: alive,
+					neighbors: 0
+				}
+			}
+		}
+		if (random){
+			for(let y = 0; y < this.windowHeightInCells; y++){
+				for(let x = 0; x < this.windowWidthInCells; x++){
+					bitmap[y][x].neighbors = this.countNeighbors(x, y, bitmap);
+				}
+			}
+		}
+		return bitmap;
+	}
+
+	getCells(){
+		let cells = []
+		for(let i = 0; i < this.bitmap.length; i++){
+			for(let j = 0; j < this.bitmap[0].length; j++){
+				if (this.bitmap[i][j].alive){
+					cells[cells.length] = [j, i];
+				}
+			}
+		}
+		return cells;
+	}
+
+	deepCopyBitmap(){
+		let bitmapCopy = Array(this.windowHeightInCells);
+		for(let i = 0; i < this.windowHeightInCells; i++){
+			bitmapCopy[i] = Array(this.windowWidthInCells);
+			for(let j = 0; j < this.windowWidthInCells; j++){
+				let cell = this.bitmap[i][j];
+				bitmapCopy[i][j] = {
+					alive: cell.alive,
+					neighbors: cell.neighbors
+				}
+			}
+		}
+		return bitmapCopy;
+	}
+
+	nextBitmap(){
+		let nextBitmap = this.deepCopyBitmap();
+		for (let y=0; y < this.windowHeightInCells; y ++){
+			for(let x=0; x < this.windowWidthInCells; x++){
+				let cell = this.bitmap[y][x];
+				// Dead cell comes alive
+				if (!cell.alive && cell.neighbors == 3){
+					nextBitmap[y][x].alive = true;
+					this.updateNeighbors(x, y, nextBitmap, true);
+				}
+				// Live cell dies
+				if (cell.alive && ![2,3].includes(cell.neighbors)){
+					nextBitmap[y][x].alive = false;
+					this.updateNeighbors(x, y, nextBitmap, false);
+				}
+			}
+		}
+		return nextBitmap;
+	}
+
+	countNeighbors(x, y, bitmap){
+		let count = 0;
+		for ( let i = y-1; i <= y+1; i ++){
+			for ( let j = x-1; j <= x+1; j ++){
+				if ( !((i == y) && (j == x)) ){
+					if ( (j >= 0) && (j < bitmap[y].length) ){
+						if ( (i >= 0) && (i < bitmap.length) ){
+							count += bitmap[i][j].alive;
+						}
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	updateNeighbors(x, y, bitmap, alive){
+		for ( let i = y-1; i <= y+1; i ++){
+			for ( let j = x-1; j <= x+1; j ++){
+				if ( !((i == y) && (j == x)) ){
+					if ( (j >= 0) && (j < bitmap[y].length) ){
+						if ( (i >= 0) && (i < bitmap.length) ){
+							let incOrDec = alive? 1 : -1;
+							bitmap[i][j].neighbors += incOrDec;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	interval = null;
+	run(){
+		this.setState({running: true});
+		this.interval = setInterval(() => {
+			const t0 = performance.now();
+
+			this.bitmap = this.nextBitmap();
+			let cells = this.getCells();
+			this.setState({ cells: cells });
+
+			const t1 = performance.now();
+			console.log(`Total Render Time = ${t1-t0}`);
+		}, 1000);
+	}
+
+	pause(){
+		clearInterval(this.interval);
+		this.setState({running: false});
+	}
+
+	handleRunPauseClick(){
+		console.log("run-pause clicked");
+		if (this.state.running) this.pause();
+		else this.run();
+	}
+
+	handleSquareClick(event, canvas){
+		const rect = canvas.getBoundingClientRect()
+		let x = event.clientX - rect.left
+    	let y = event.clientY - rect.top
+    	x = Math.floor(x/this.cellWidthInPixels);
+    	y = Math.floor(y/this.cellHeightInPixels);
+    	this.bitmap[y][x].alive = !this.bitmap[y][x].alive;
+    	this.updateNeighbors(x, y, this.bitmap, this.bitmap[y][x].alive)
+    	console.log(`Square(${x}, ${y}, n=${this.bitmap[y][x].neighbors})`);
+    	this.setState({cells: this.getCells()});
+	}
+
+	handleClearClick(){
+		console.log("clear");
+		clearInterval(this.interval);
+		this.bitmap = this.makeEmptyBitmap(false);
+		this.setState({
+			cells: this.getCells(),
+			running: false
+		});
+	}
+
+	render(){
+		return(
+			<div>
+				<WorldWindow
+					cells = {this.state.cells}
+					windowWidthInCells = {this.windowWidthInCells}
+					windowHeightInCells = {this.windowHeightInCells}
+					cellWidthInPixels = {this.cellWidthInPixels}
+					cellHeightInPixels = {this.cellHeightInPixels}
+					onSquareClick = {(event, canvas)=>this.handleSquareClick(event, canvas)}
+				/>
+				<Controls
+					running = {this.state.running}
+					onRunPauseClick = {()=>this.handleRunPauseClick()}
+					onClearClick = {()=>this.handleClearClick()}
+				/>
+			</div>
+		);
 	}
 }
 

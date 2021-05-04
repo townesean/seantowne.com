@@ -1,35 +1,21 @@
 
-.board-row:after {
-  clear: left;
-  content: "";
-  display: table;
+canvas{
+  border: 1px solid #000000;
 }
 
 
-.square {
-  background: #fff;
-  border: 1px solid rgba(111,111,111,0.1);
-  
-  float: left;
-  line-height: 34px;
-  height: 10px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  width: 10px;
+
+.Board {
+    position: relative;
+    margin: 0 auto;
+    background-color: #999;
+    background-image:
+        linear-gradient(#333 1px, transparent 1px),
+        linear-gradient(90deg, #333 1px, transparent 1px);
 }
 
-.square:focus {
-  outline: none;
-}
 
-#gol-board{
-  
-}
 
-#gol-controls{
-
-}
 
 #gol-game{
 
