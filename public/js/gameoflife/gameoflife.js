@@ -443,7 +443,7 @@ class Game extends React.Component{
 		this.state = {
 			cells: this.getCells(),
 			running: false,
-			delay: 100
+			delay: 10
 		}
 	}
 
