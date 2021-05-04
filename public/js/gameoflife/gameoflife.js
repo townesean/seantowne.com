@@ -402,7 +402,7 @@ class Controls extends React.Component{
 		return (
 			<div>
 				<button
-					onClick = {()=>this.props.onRunPauseClick()}
+					onClick = {()=>this.props.onPlayPauseClick()}
 				>{runPause}</button>
 				<button
 					onClick = {()=>this.props.onClearClick()}
@@ -427,16 +427,17 @@ class Game extends React.Component{
 
 		
 		this.windowWidthInCells = 90
-		this.windowHeightInCells = 56
-		this.cellWidthInPixels = 10
-		this.cellHeightInPixels = 10
-		this.intervalDelay = 100;
+		this.windowHeightInCells = 60
+		this.cellWidthInPixels = 20
+		this.cellHeightInPixels = 20
+		
 	
 
 		this.bitmap = this.makeEmptyBitmap(true);
 		this.state = {
 			cells: this.getCells(),
-			running: false
+			running: false,
+			delay: 100
 		}
 	}
 
@@ -541,30 +542,44 @@ class Game extends React.Component{
 		}
 	}
 
-	interval = null;
-	run(){
+	play(){
 		this.setState({running: true});
-		this.interval = setInterval(() => {
-			const t0 = performance.now();
+		this.run();
+	}
+	run(){
 
-			this.bitmap = this.nextBitmap();
-			let cells = this.getCells();
-			this.setState({ cells: cells });
+		const t0 = performance.now();
+		this.bitmap = this.nextBitmap();
+		const t1 = performance.now();
+		console.log(`Bitmap: ${t1-t0}`);
 
-			const t1 = performance.now();
-			//console.log(`Total Render Time = ${t1-t0}`);
-		}, this.intervalDelay);
+		const t2 = performance.now();
+		let cells = this.getCells();
+		const t3 = performance.now();
+		console.log(`getCells: ${t3-t2}`);
+
+		const t4 = performance.now();
+		this.setState({ cells: cells });
+		const t5 = performance.now();
+		console.log(`setState: ${t5-t4}`);
+
+		console.log(`Total Render Time = ${t5-t0}`);
+
+		this.timeoutHandler = window.setTimeout(() => {
+			this.run();
+		}, this.state.delay);
 	}
 
 	pause(){
-		clearInterval(this.interval);
+		window.clearTimeout(this.timeoutHandler);
 		this.setState({running: false});
+		this.timeoutHandler = null;
 	}
 
-	handleRunPauseClick(){
+	handlePlayPauseClick(){
 		console.log("run-pause clicked");
 		if (this.state.running) this.pause();
-		else this.run();
+		else this.play();
 	}
 
 	handleSquareClick(event, canvas){
@@ -581,7 +596,8 @@ class Game extends React.Component{
 
 	handleClearClick(){
 		console.log("clear");
-		clearInterval(this.interval);
+		//clearInterval(this.interval);
+		window.clearTimeout(this.timeoutHandler);
 		this.bitmap = this.makeEmptyBitmap(false);
 		this.setState({
 			cells: this.getCells(),
@@ -590,12 +606,13 @@ class Game extends React.Component{
 	}
 
 	handleSpeedChange(event){
-		this.intervalDelay = event.target.value;
-		console.log(this.intervalDelay)
+		this.setState({delay:event.target.value});
+		/*
 		if (this.state.running){
-			clearInterval(this.interval);
+			window.clearTimeout(this.timeoutHandler);
 			this.run();
 		}
+		*/
 	}
 
 	render(){
@@ -611,7 +628,7 @@ class Game extends React.Component{
 				/>
 				<Controls
 					running = {this.state.running}
-					onRunPauseClick = {()=>this.handleRunPauseClick()}
+					onPlayPauseClick = {()=>this.handlePlayPauseClick()}
 					onClearClick = {()=>this.handleClearClick()}
 					onSpeedChange = {(event)=>this.handleSpeedChange(event)}
 				/>
