@@ -426,8 +426,8 @@ class Game extends React.Component{
 		super(props);
 
 		
-		this.windowWidthInCells = 90
-		this.windowHeightInCells = 60
+		this.windowWidthInCells = 40
+		this.windowHeightInCells = 30
 		this.cellWidthInPixels = 20
 		this.cellHeightInPixels = 20
 		
