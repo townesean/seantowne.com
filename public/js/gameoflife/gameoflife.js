@@ -418,7 +418,7 @@ class Controls extends React.Component{
 						min="10" 
 						max="500"
 						step="1"
-						defaultValue="500"
+						defaultValue={this.props.delay}
 						onMouseUp={(event)=>this.props.onSpeedChange(event)}
 						>
 				</input>
@@ -432,10 +432,10 @@ class Game extends React.Component{
 		super(props);
 
 		
-		this.windowWidthInCells = 40
+		this.windowWidthInCells = 60
 		this.windowHeightInCells = 30
-		this.cellWidthInPixels = 20
-		this.cellHeightInPixels = 20
+		this.cellWidthInPixels = 15
+		this.cellHeightInPixels = 15
 		
 	
 
@@ -643,6 +643,7 @@ class Game extends React.Component{
 					onClearClick = {()=>this.handleClearClick()}
 					onSpeedChange = {(event)=>this.handleSpeedChange(event)}
 					onRandom = {()=>this.handleRandomClick()}
+					delay = {this.state.delay}
 				/>
 			</div>
 		);
