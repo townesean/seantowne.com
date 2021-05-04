@@ -373,12 +373,9 @@ class WorldWindow extends React.Component{
     		}
     	}
 		const t1 = performance.now();
-		//console.log(`Draw Time = ${t1-t}`)
 	}
 
 	handleClick(event){
-		//console.log(event)
-		//console.log(canvas)
 		this.props.onSquareClick(event, this.refs.canvas);
 	}
 
@@ -410,6 +407,15 @@ class Controls extends React.Component{
 				<button
 					onClick = {()=>this.props.onClearClick()}
 				>Clear</button>
+				<input 
+						type="range" 
+						min="10" 
+						max="500"
+						step="1"
+						defaultValue="500"
+						onMouseUp={(event)=>this.props.onSpeedChange(event)}
+						>
+					</input>
 			</div>
 		);
 	}
@@ -420,10 +426,11 @@ class Game extends React.Component{
 		super(props);
 
 		
-		this.windowWidthInCells = 40
-		this.windowHeightInCells = 28
+		this.windowWidthInCells = 90
+		this.windowHeightInCells = 56
 		this.cellWidthInPixels = 10
 		this.cellHeightInPixels = 10
+		this.intervalDelay = 100;
 	
 
 		this.bitmap = this.makeEmptyBitmap(true);
@@ -545,8 +552,8 @@ class Game extends React.Component{
 			this.setState({ cells: cells });
 
 			const t1 = performance.now();
-			console.log(`Total Render Time = ${t1-t0}`);
-		}, 1000);
+			//console.log(`Total Render Time = ${t1-t0}`);
+		}, this.intervalDelay);
 	}
 
 	pause(){
@@ -582,6 +589,15 @@ class Game extends React.Component{
 		});
 	}
 
+	handleSpeedChange(event){
+		this.intervalDelay = event.target.value;
+		console.log(this.intervalDelay)
+		if (this.state.running){
+			clearInterval(this.interval);
+			this.run();
+		}
+	}
+
 	render(){
 		return(
 			<div>
@@ -597,6 +613,7 @@ class Game extends React.Component{
 					running = {this.state.running}
 					onRunPauseClick = {()=>this.handleRunPauseClick()}
 					onClearClick = {()=>this.handleClearClick()}
+					onSpeedChange = {(event)=>this.handleSpeedChange(event)}
 				/>
 			</div>
 		);
