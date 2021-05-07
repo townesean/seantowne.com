@@ -328,24 +328,23 @@ class Game extends React.Component{
 class WorldWindow extends React.Component{
 	constructor(props){
 		super(props);
-		//this.ctx = refs.canvas.getContext("2d");
-		//this.ctx.scale()
 	}
 
 	componentDidUpdate(){
 		this.draw();
 	}
+
 	componentDidMount(){
 		this.refs.canvas.getContext("2d").scale(2,2);
 		this.draw();
 	}
+
 	
 	drawCell(x, y, ctx, color){
-		let w = this.props.cellWidthInPixels;
-		let h = this.props.cellHeightInPixels;
+		let l = this.props.cellSize;
 		ctx.beginPath();
 		ctx.lineWidth = 0.05;
-		ctx.rect(x*w, y*h, w, h);
+		ctx.rect(x*l, y*l, l, l);
 		ctx.outline = "white";
 		ctx.fillStyle = color;
 		ctx.fill();
@@ -359,6 +358,7 @@ class WorldWindow extends React.Component{
     	let cells = this.props.cells;
     	let cellsIndex = 0;
     	let cellsLength = cells.length;
+
     	for (let y = 0; y < this.props.windowHeightInCells; y++){
     		for (let x = 0; x < this.props.windowWidthInCells; x++){
     			let color = "white";
@@ -380,17 +380,21 @@ class WorldWindow extends React.Component{
 	}
 
 	render(){
-		let w = this.props.windowWidthInCells * this.props.cellWidthInPixels;
-		let h = this.props.windowHeightInCells * this.props.cellHeightInPixels;
+		console.log(this.props.standardCellSize)
+		let w = this.props.windowWidthInCells * this.props.standardCellSize;
+		let h = this.props.windowHeightInCells * this.props.standardCellSize;
 		
 		return(
-			<canvas 
-				ref="canvas" 
-				width={2*w} 
-				height={2*h}
-				onClick = {(event)=>this.handleClick(event)}
-				style={{width:w, height:h}}
-			/>
+			<div id="gol-World">
+				<canvas 
+					ref="canvas" 
+					width={2*w} 
+					height={2*h}
+					onClick = {(event)=>this.handleClick(event)}
+					onWheel = {(event)=>this.props.onScroll(event)}
+					style={{width:w, height:h}}
+				/>
+			</div>
 		);
 	}
 }
@@ -400,7 +404,7 @@ class Controls extends React.Component{
 	render(){
 		let runPause = this.props.running? "Pause":"Run";
 		return (
-			<div>
+			<div id="gol-Controls">
 				<button
 					onClick = {()=>this.props.onPlayPauseClick()}
 				>{runPause}</button>
@@ -414,6 +418,8 @@ class Controls extends React.Component{
 				>Random</button>
 
 				<input 
+						className="slider"
+						id="speed-slider"
 						type="range" 
 						min="10" 
 						max="500"
@@ -432,10 +438,11 @@ class Game extends React.Component{
 		super(props);
 
 		
-		this.windowWidthInCells = 60
-		this.windowHeightInCells = 30
-		this.cellWidthInPixels = 15
-		this.cellHeightInPixels = 15
+		this.windowWidthInCells = 60;
+		this.windowHeightInCells = 30;
+		this.standardCellSize = 15;
+		//this.cellWidthInPixels = 15
+		//this.cellHeightInPixels = 15
 		
 	
 
@@ -443,7 +450,8 @@ class Game extends React.Component{
 		this.state = {
 			cells: this.getCells(),
 			running: false,
-			delay: 100
+			delay: 100,
+			cellSize: 15,
 		}
 	}
 
@@ -592,8 +600,8 @@ class Game extends React.Component{
 		const rect = canvas.getBoundingClientRect()
 		let x = event.clientX - rect.left
     	let y = event.clientY - rect.top
-    	x = Math.floor(x/this.cellWidthInPixels);
-    	y = Math.floor(y/this.cellHeightInPixels);
+    	x = Math.floor(x/this.state.cellSize);
+    	y = Math.floor(y/this.state.cellSize);
     	this.bitmap[y][x].alive = !this.bitmap[y][x].alive;
     	this.updateNeighbors(x, y, this.bitmap, this.bitmap[y][x].alive)
     	console.log(`Square(${x}, ${y}, n=${this.bitmap[y][x].neighbors})`);
@@ -626,16 +634,29 @@ class Game extends React.Component{
 		this.setState({cells:this.getCells()});
 	}
 
+	handleScroll(event){
+		//console.log(event.deltaY);
+		let out = event.deltaY > 0;
+		if (out){
+			if (this.state.cellSize <= 3)return;
+			this.setState({cellSize:this.state.cellSize-1})
+		}else{
+			if (this.state.cellSize >= 50)return;
+			this.setState({cellSize:this.state.cellSize+1})
+		}
+	}
+
 	render(){
 		return(
-			<div>
+			<div id="gol-Game">
 				<WorldWindow
 					cells = {this.state.cells}
 					windowWidthInCells = {this.windowWidthInCells}
 					windowHeightInCells = {this.windowHeightInCells}
-					cellWidthInPixels = {this.cellWidthInPixels}
-					cellHeightInPixels = {this.cellHeightInPixels}
+					cellSize = {this.state.cellSize}
+					standardCellSize = {this.standardCellSize}
 					onSquareClick = {(event, canvas)=>this.handleSquareClick(event, canvas)}
+					onScroll = {(event)=>this.handleScroll(event)}
 				/>
 				<Controls
 					running = {this.state.running}
@@ -644,6 +665,7 @@ class Game extends React.Component{
 					onSpeedChange = {(event)=>this.handleSpeedChange(event)}
 					onRandom = {()=>this.handleRandomClick()}
 					delay = {this.state.delay}
+
 				/>
 			</div>
 		);
