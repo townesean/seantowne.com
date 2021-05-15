@@ -1,16 +1,11 @@
-
-
 /*
 class Square extends React.Component{
-
-
 	
 	shouldComponentUpdate(nextProps, nextState) {
 		
 		return ( this.props.alive != nextProps.alive )
 	}
 	
-
 	render(){
 		//if (Math.random() > 0.9) console.log("renderSquare")
 		const color = (
@@ -18,7 +13,6 @@ class Square extends React.Component{
 			this.props.colors.aliveColor : 
 			this.props.colors.deadColor
 		);
-
 		return (
 			<button
 				className="square"
@@ -26,17 +20,13 @@ class Square extends React.Component{
 				style={{ backgroundColor: color }}
 			>
 			</button>
-
 		);
 	}
 }
-
 class Board extends React.Component{
 	renderSquare(x, y){
 		
-
 		var alive = this.props.lifeMatrix[y][x].alive;
-
 		var key = `( ${x} , ${y} )`;
 		return(
 			<Square
@@ -48,17 +38,12 @@ class Board extends React.Component{
 			</Square>
 		);
 	}
-
 	makeBoard(){
-
 	}
-
 	render(){
 		const t = performance.now();
-
 		const bh = this.props.lifeMatrix.length;
 		const bw = this.props.lifeMatrix[0].length;
-
 		let board = [];
 		for ( let i = 0; i < bh; i ++){
 			let row = [];
@@ -77,23 +62,19 @@ class Board extends React.Component{
 		);
 	}
 }
-
 class Controls extends React.Component{
 	render(){
 		let pauseRun = this.props.running ? 'Pause' : 'Run';
 		return(
 			<div>
-
 				<button 
 					onClick = {()=>this.props.onRunningPauseClick()}
 					>{pauseRun}
 				</button>
-
 				<button 
 					onClick = {()=>this.props.onClearClick()}
 					>Clear
 				</button>
-
 				<div id="slider">
 					<input 
 						type="range" 
@@ -104,24 +85,19 @@ class Controls extends React.Component{
 						>
 					</input>
 				</div>
-
 			</div>
 		);
 	}
 }
-
 class Game extends React.Component{
 	constructor(props){
 		super(props);
-
 		
 		this.width = 90;
 		this.height = 54;
-
 		var lifeMatrix = this.lifeMatrix(true);
 		
 		
-
 		this.state = {
 			colors: {
 				aliveColor: #90c482,
@@ -131,7 +107,6 @@ class Game extends React.Component{
 			running: false,
 		}
 	}
-
 	render(){
 		
 		return (
@@ -143,7 +118,6 @@ class Game extends React.Component{
 						onClick = {(x,y)=>this.handleSquareClick(x,y)}
 					/>
 				</div>
-
 				<div id="gol-controls">
 					<Controls
 						running = {this.state.running}
@@ -155,7 +129,6 @@ class Game extends React.Component{
 			</div>
 		);	
 	}
-
 	increment_decrement_Neighbors(y, x, matrix, incrementOrDecrement){
 		var count = 0;
 		for ( let i = y-1; i <= y+1; i ++){
@@ -171,7 +144,6 @@ class Game extends React.Component{
 			}
 		}
 	}
-
 	lifeMatrix(random){
 		var lifeMatrix = [];
 		for (var i = 0; i < this.height; i++ ){
@@ -194,7 +166,6 @@ class Game extends React.Component{
 		}
 		return lifeMatrix;
 	}
-
 	delay = 1000;
 	percentDelay = 0.5;
 	handleSpeedChange(event){
@@ -206,7 +177,6 @@ class Game extends React.Component{
 			this.run();
 		}
 	}
-
 	countNeighbors(y, x, current){
 		var count = 0;
 		for ( let i = y-1; i <= y+1; i ++){
@@ -222,10 +192,8 @@ class Game extends React.Component{
 		}
 		return count;
 	}
-
 	deepCopyLifeMatrix(original){
 		let copy = new Array(original.length);
-
 		for (var i = 0; i < original.length; i ++){
 			let nextRow = new Array(original[0].length);
 			copy[i] = nextRow;
@@ -236,7 +204,6 @@ class Game extends React.Component{
 		}
 		return copy;
 	}
-
 	nextMatrix(){
 		//console.log("nextMatrix");
 		let current = this.state.lifeMatrix;
@@ -250,7 +217,6 @@ class Game extends React.Component{
 			for (let j = 0; j < current[i].length; j ++){
 				let cell = current[i][j];
 				let nc = cell.neighborCount;
-
 				
 				
 				// Cell is alive and becomes dead (Change)
@@ -259,7 +225,6 @@ class Game extends React.Component{
 					this.increment_decrement_Neighbors(i, j, next, false);
 					continue;
 				}
-
 				// Cell is dead and becomes alive (Change)
 				if ( !cell.alive && (nc == 3) ) {
 					next[i][j].alive = true;
@@ -273,13 +238,9 @@ class Game extends React.Component{
 		
 		return next;
 	}
-
-
 	interval = null;
-
 	run(){
 		this.setState({running: true});
-
 		this.interval = setInterval(() => {
 			const t = performance.now();
 			this.setState({
@@ -290,13 +251,11 @@ class Game extends React.Component{
 		}, this.delay * this.percentDelay);
 		//console.log("run clicked");
 	}
-
 	pause(){
 		clearInterval(this.interval);
 		this.setState({running:false});
 		//console.log("paused clicked");
 	}
-
 	handleRunningPauseClick(){
 		//console.log("Run/Pause clicked")
 		let running = this.state.running;
@@ -306,14 +265,12 @@ class Game extends React.Component{
 			this.run();
 		}
 	}
-
 	handleClearClick(){
 		//console.log("clear clicked");
 		this.pause();
 		//let blank = Array(this.state.lifeMatrix.length).fill(null).map(x => Array(this.state.lifeMatrix[0].length).fill({alive:false, neighborCount:0}));
 		this.setState({lifeMatrix: this.lifeMatrix()});
 	}
-
 	handleSquareClick = (x, y) => {
 		let lifeMatrix = this.state.lifeMatrix;
 		let neighbors = lifeMatrix[y][x].neighborCount;
@@ -359,8 +316,11 @@ class WorldWindow extends React.Component{
     	let cellsIndex = 0;
     	let cellsLength = cells.length;
 
-    	for (let y = 0; y < this.props.windowHeightInCells; y++){
-    		for (let x = 0; x < this.props.windowWidthInCells; x++){
+    	let h = this.refs.canvas.height / this.props.cellSize;
+    	let w = this.refs.canvas.width / this.props.cellSize;
+
+    	for (let y = 0; y < h; y++){
+    		for (let x = 0; x < w; x++){
     			let color = "white";
     			if ( cellsIndex < cellsLength ){
     				let cell = cells[cellsIndex];
@@ -380,7 +340,7 @@ class WorldWindow extends React.Component{
 	}
 
 	render(){
-		console.log(this.props.standardCellSize)
+		
 		let w = this.props.windowWidthInCells * this.props.standardCellSize;
 		let h = this.props.windowHeightInCells * this.props.standardCellSize;
 		
@@ -457,9 +417,14 @@ class Game extends React.Component{
 
 	makeEmptyBitmap(random){
 		let bitmap = [];
-		for(let y = 0; y < this.windowHeightInCells; y++){
+		let h = 150;
+		let w = 300;
+
+		//for(let y = 0; y < this.windowHeightInCells; y++){
+		for(let y = 0; y < h; y++){
 			bitmap[y] = [];
-			for(let x = 0; x < this.windowWidthInCells; x++){
+			//for(let x = 0; x < this.windowWidthInCells; x++){
+			for(let x = 0; x < w; x++){
 				let alive = false;
 				if (random) alive = Math.random() > 0.8;
 				bitmap[y][x] = {
@@ -469,8 +434,8 @@ class Game extends React.Component{
 			}
 		}
 		if (random){
-			for(let y = 0; y < this.windowHeightInCells; y++){
-				for(let x = 0; x < this.windowWidthInCells; x++){
+			for(let y = 0; y < h; y++){
+				for(let x = 0; x < w; x++){
 					bitmap[y][x].neighbors = this.countNeighbors(x, y, bitmap);
 				}
 			}
@@ -491,10 +456,13 @@ class Game extends React.Component{
 	}
 
 	deepCopyBitmap(){
-		let bitmapCopy = Array(this.windowHeightInCells);
-		for(let i = 0; i < this.windowHeightInCells; i++){
-			bitmapCopy[i] = Array(this.windowWidthInCells);
-			for(let j = 0; j < this.windowWidthInCells; j++){
+		let h = 150;
+		let w = 300;
+
+		let bitmapCopy = Array(h);
+		for(let i = 0; i < h; i++){
+			bitmapCopy[i] = Array(w);
+			for(let j = 0; j < w; j++){
 				let cell = this.bitmap[i][j];
 				bitmapCopy[i][j] = {
 					alive: cell.alive,
@@ -506,9 +474,11 @@ class Game extends React.Component{
 	}
 
 	nextBitmap(){
+		let h = 150;
+		let w = 300;
 		let nextBitmap = this.deepCopyBitmap();
-		for (let y=0; y < this.windowHeightInCells; y ++){
-			for(let x=0; x < this.windowWidthInCells; x++){
+		for (let y=0; y < h; y ++){
+			for(let x=0; x < w; x++){
 				let cell = this.bitmap[y][x];
 				// Dead cell comes alive
 				if (!cell.alive && cell.neighbors == 3){
@@ -638,7 +608,7 @@ class Game extends React.Component{
 		//console.log(event.deltaY);
 		let out = event.deltaY > 0;
 		if (out){
-			if (this.state.cellSize <= 3)return;
+			if (this.state.cellSize <= 1)return;
 			this.setState({cellSize:this.state.cellSize-1})
 		}else{
 			if (this.state.cellSize >= 50)return;
