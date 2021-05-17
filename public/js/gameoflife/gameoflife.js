@@ -313,10 +313,13 @@ class WorldWindow extends React.Component{
 	}
 	clear(){
 		//this.ctx.beginPath();
+		//this.ctx.fillStyle = "white";
+		//console.log(this.refs.canvas.width);
+		//console.log(this.refs.canvas.height);
 		this.ctx.fillStyle = "white";
-		console.log(this.refs.canvas.width);
-		console.log(this.refs.canvas.height);
 		this.ctx.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+		this.ctx.beginPath();
+		this.ctx.stroke();
 		//this.ctx.stroke();
 	}
 
@@ -623,10 +626,11 @@ class Game extends React.Component{
 		console.log("clear");
 		window.clearTimeout(this.timeoutHandler);
 		this.bitmap = this.makeEmptyBitmap(false);
+		
 		this.worldWindow.blankGrid();
-		this.setState({
-			running: false
-		});
+		//this.setState({
+		//	running: false
+		//});
 	}
 
 	handleSpeedChange(event){
@@ -643,13 +647,16 @@ class Game extends React.Component{
 		let out = event.deltaY > 0;
 		if (out){
 			if (this.state.cellSize <= this.minCellSize)return;
-			this.setState({cellSize:this.state.cellSize-1});
+			let newSize = this.state.cellSize*0.99;
+			if (newSize< this.minCellSize) newSize = this.minCellSize;
+			this.setState({cellSize:newSize});
 			//this.setState({changes:this.changesForRedraw()});
 			
 		}else{
 			if (this.state.cellSize >= this.maxCellSize)return;
-			this.setState({cellSize:this.state.cellSize+1});
-			//this.setState({changes:this.changesForRedraw()});
+			let newSize = this.state.cellSize*1.01;
+			if (newSize > this.maxCellSize) newSize = this.maxCellSize;
+			this.setState({cellSize:newSize});
 		}
 	}
 
