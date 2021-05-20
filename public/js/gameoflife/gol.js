@@ -103,13 +103,13 @@ class Game {
 		cellSize,
 		delay
 	){
-		this.widthInCells = widthInCells;
-		this.heightInCells = heightInCells;
+		this.widthInCells = widthInCells+100;
+		this.heightInCells = heightInCells+100;
 		this.widthInPixels = widthInPixels;
 		this.heightInPixels = heightInPixels;
 		this.cellSize = cellSize;
 
-		this.viewingRectangle = this.getViewingRectangle();
+		//this.viewingRectangle = this.getViewingRectangle();
 
 		this.bitmap = this.makeEmptyBitmap(true);
 		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, 'gol');
@@ -139,63 +139,56 @@ class Game {
 
 	viewRecDim(){
 		return {
-			w: this.widthInPixels/this.cellSize/2,
-			h: this.heightInPixels/this.cellSize/2
+			w: Math.floor(this.widthInPixels/this.cellSize/2),
+			h: Math.floor(this.heightInPixels/this.cellSize/2)
 		}
 	}
 
 	getViewingRectangle(){
 		if (!this.viewingRectangle){
-			return ({
-				x: 0,
-				y: 0,
-				w: this.viewRecDim().w,
-				h: this.viewRecDim().h
-			});
+			// center of world
+			let center = { 
+				x: Math.floor(this.widthInCells/2),
+				y: Math.floor(this.heightInCells/2)
+			}
+			// rectangle with 'center' at center
+			let viewingRectangle = {
+				left  : center.x - Math.floor(this.viewRecDim().w/2),
+				top   : center.y - Math.floor(this.viewRecDim().h/2),
+				right : center.x + Math.floor(this.viewRecDim().w/2),
+				bottom: center.y + Math.floor(this.viewRecDim().h/2)
+			};
+			this.viewingRectangle = viewingRectangle;
 		}
-		else{
-			return ({
-				x:this.viewingRectangle.x,
-				y:this.viewingRectangle.y,
-				w:this.viewRecDim().w,
-				h:this.viewRecDim().h
-			});
+		return {
+			left  : this.viewingRectangle.left,
+			top   : this.viewingRectangle.top,
+			right : this.viewingRectangle.right,
+			bottom: this.viewingRectangle.bottom
 		}
 	}
 
 	setViewingRectangle(vr){
-		let minX = 0;
-		let minY = 0;
-		let maxX = this.widthInCells - this.viewRecDim().w 
-		let maxY = this.heightInCells - this.viewRecDim().h;
+		// vr should be a modified copy of this.getViewingRectangle()
+		if (
+			vr.left >= 0 &&
+			vr.top  >= 0 &&
+			vr.right <= this.widthInCells &&
+			vr.bottom <= this.heightInCells
+		){
+			console.log(vr);
 
-		if (vr.x < maxX && vr.x > minX) this.viewingRectangle.x = vr.x;
-		if (vr.y < maxY && vr.x > minX) this.viewingRectangle.y = vr.y;
-		this.viewingRectangle.w = this.viewRecDim().w;
-		this.viewingRectangle.h = this.viewRecDim().h;
-		/*
-		let valid = (
-			vr.x < maxX && 
-			vr.x > minX && 
-			vr.y < maxY && 
-			vr.x > minY
-		);
-
-		if (valid){
 			this.viewingRectangle = {
-				x: vr.x,
-				y: vr.y,
-				w: this.viewRecDim().w,
-				h: this.viewRecDim().h
+				left: vr.left,
+				top: vr.top,
+				right:vr.right,
+				bottom:vr.bottom
 			}
 			return true;
-		}
-		else{
-			console.log("Invalid Viewing Rect");
-			console.log(vr);
+		}else{
 			return false;
 		}
-		*/
+
 	}
 
 	handleKeyPress = (event) => {
@@ -242,21 +235,18 @@ class Game {
 				y: this.dragingPos1.y - this.dragingPos0.y
 			};
 			//console.log(delta);
-			this.shiftViewingRectangle(delta);
+			this.translateView(delta);
 		}
 	}
 
-	shiftViewingRectangle(delta){
+	translateView(delta){
 		let vr = this.getViewingRectangle();
-		vr.x -= delta.x;
-		vr.y -= delta.y;
-		this.setViewingRectangle(vr);
-		this.redrawGrid();
-		/*
-		if (this.setViewingRectangle(vr)){
+		vr.left -= delta.x;
+		vr.top -= delta.y;
+		vr.right -= delta.x;
+		vr.bottom -= delta.y;
+		if(this.setViewingRectangle(vr)) 
 			this.redrawGrid();
-		}
-		*/
 	}
 
 	redrawGrid(){
@@ -264,33 +254,64 @@ class Game {
 		this.grid.updateChangedCells(this.getCells(this.bitmap));
 	}
 
+	scaleView(out){
+		let scaleFactor = out?0.95:1.05;
+
+		if(this.cellSize == MIN_CELL_SIZE && out)return;
+		if(this.cellSize == MAX_CELL_SIZE && !out)return;
+
+		let newSize = this.cellSize * scaleFactor;
+		if (newSize < MIN_CELL_SIZE) newSize = MIN_CELL_SIZE;
+		if (newSize > MAX_CELL_SIZE) newSize = MAX_CELL_SIZE;
+
+		let vr = this.getViewingRectangle();
+		let oldDim = this.viewRecDim();
+		let center = {
+			x: vr.left + Math.floor(oldDim.w/2),
+			y: vr.top + Math.floor(oldDim.h/2)
+		}
+		// vr width * cellsize should always = width in pixels
+		// vr width = width in pixels / cell size
+		this.cellSize = newSize;
+		this.grid.cellSize = newSize;
+		let newDim = this.viewRecDim();
+
+		vr.left = center.x - Math.floor(newDim.w/2);
+		vr.right = center.x + Math.floor(newDim.w/2);
+		vr.top = center.y - Math.floor(newDim.h/2);
+		vr.bottom = center.y + Math.floor(newDim.h/2);
+
+		this.setViewingRectangle(vr);
+
+		//let newDim = this.viewRecDim();
+		//let oldDim = {
+		//	w: vr.right - vr.left,
+		//	h: vr.bottom - vr.top
+		//}
+
+		//vr.left -= Math.floor((newDim.w - oldDim.w) / 2);
+		//vr.right -= Math.floor((newDim.w - oldDim.w) / 2);
+		//vr.top += Math.floor((newDim.h - oldDim.h) / 2);
+		//vr.bottom += Math.floor((newDim.h - oldDim.h) / 2);
+
+
+		//if (this.setViewingRectangle(vr)) this.redrawGrid();
+		this.redrawGrid();
+	}
+
 	handleWheel = (event) => {
 		let out = event.deltaY > 0;
-		if (out){
-			if(this.cellSize == MIN_CELL_SIZE)return;
-			let newSize = this.cellSize * 0.95;
-			if (newSize < MIN_CELL_SIZE) newSize = MIN_CELL_SIZE;
-			this.cellSize = newSize;
-			this.grid.cellSize = newSize;
-			this.redrawGrid();
-		}
-		else{
-			let newSize = this.cellSize * 1.05;
-			if(newSize > MAX_CELL_SIZE) newSize = MAX_CELL_SIZE;
-			this.cellSize = newSize;
-			this.grid.cellSize = newSize;
-			this.redrawGrid();
-		}
+		this.scaleView(out);
 	}
 
 	handleCellClick = (event) => {
 		let square = this.grid.eventCoordinants(event);
 		let vr = this.getViewingRectangle();
-		let cell = this.bitmap[square.y+vr.y][square.x+vr.x];
+		let cell = this.bitmap[square.y+vr.top][square.x+vr.left];
 		cell.alive = !cell.alive
-		this.updateNeighbors(square.x+vr.x, square.y+vr.y, this.bitmap, cell.alive)
+		this.updateNeighbors(square.x+vr.left, square.y+vr.top, this.bitmap, cell.alive)
 		this.grid.drawCell(square.x, square.y, cell.alive);
-		console.log(`Square(${square.x}, ${square.y}, n=${cell.neighbors})`);
+		console.log(`Square(${square.x+vr.left}, ${square.y+vr.top}, n=${cell.neighbors})`);
 	}
 
 	setRunPauseButtonText(){
@@ -374,27 +395,14 @@ class Game {
 	getCells(bitmap){
 		let vr = this.getViewingRectangle();
 		let cells = []
-		/*
-		for(let i = 0; i < this.heightInCells; i++){
-			for(let j = 0; j < this.widthInCells; j++){
+		
+		//console.log({x: this.bitmap[0].length, y: this.bitmap.length})
+		for(let i = vr.top; i < vr.bottom; i++){
+			for(let j = vr.left; j < vr.right; j++){
 				if (bitmap[i][j].alive){
 					cells[cells.length] = {
-						x:j,
-						y:i,
-						alive:true
-					};
-				}
-			}
-		}
-		*/
-		//console.log(this.viewingRectangle);
-		for(let i = vr.y; i < vr.y + vr.h; i++){
-			//console.log("loop")
-			for(let j = vr.x; j < vr.x + vr.w; j++){
-				if (bitmap[i][j].alive){
-					cells[cells.length] = {
-						x:j-vr.x,
-						y:i-vr.y,
+						x:j-vr.left,
+						y:i-vr.top,
 						alive:true
 					};
 				}
@@ -433,56 +441,43 @@ class Game {
 		}
 	}
 
+	cellIsInView(x, y){
+		let vr = this.getViewingRectangle();
+		return(
+			x >= vr.left &&
+			x <= vr.right &&
+			y >= vr.top &&
+			y <= vr.bottom
+		);
+	}
 	nextBitmap(){
 		let nextBitmap = this.deepCopyBitmap();
-		let changes = [];
-		/*
-		for (let y=0; y < this.heightInCells; y ++){
-			for(let x=0; x < this.widthInCells; x++){
-				let cell = this.bitmap[y][x];
-				let change = {
-					x:x, 
-					y:y, 
-					alive:!cell.alive
-				}
-				// Dead cell comes alive
-				if (!cell.alive && cell.neighbors == 3){
-					nextBitmap[y][x].alive = true;
-					this.updateNeighbors(x, y, nextBitmap, true);
-					changes[changes.length] = change;
-				}
-				// Live cell dies
-				if (cell.alive && ![2,3].includes(cell.neighbors)){
-					nextBitmap[y][x].alive = false;
-					this.updateNeighbors(x, y, nextBitmap, false);
-					changes[changes.length] = change;
-				}
-			}
-		}
-		*/
 		let vr = this.getViewingRectangle();
-		for (let y = vr.y; y < vr.y + vr.h; y ++){
-			for(let x= vr.x; x < vr.x + vr.w; x++){
+		let changes = [];
+
+		for (let y = 0; y < this.heightInCells; y ++){
+			for(let x = 0; x < this.widthInCells; x++){
 				let cell = this.bitmap[y][x];
 				let change = {
-					x:x-vr.x, 
-					y:y-vr.y, 
+					x: x - vr.left, 
+					y: y -vr.top, 
 					alive:!cell.alive
 				}
 				// Dead cell comes alive
 				if (!cell.alive && cell.neighbors == 3){
 					nextBitmap[y][x].alive = true;
 					this.updateNeighbors(x, y, nextBitmap, true);
-					changes[changes.length] = change;
+					if (this.cellIsInView(x, y)) changes[changes.length] = change;
 				}
 				// Live cell dies
 				if (cell.alive && ![2,3].includes(cell.neighbors)){
 					nextBitmap[y][x].alive = false;
 					this.updateNeighbors(x, y, nextBitmap, false);
-					changes[changes.length] = change;
+					if (this.cellIsInView(x, y)) changes[changes.length] = change;
 				}
 			}
 		}
+		
 		return {nextBitmap, changes};
 	}
 }
