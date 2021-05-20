@@ -1,7 +1,7 @@
 const ALIVE_COLOR = "#90c482";
 const DEAD_COLOR = "white";
-const WIDTH_OF_CANVAS_IN_PIXELS = 1800; // pixels
-const HEIGHT_OF_CANVAS_IN_PIXELS = 900; // pixels
+const WIDTH_OF_CANVAS_IN_PIXELS = 900*devicePixelRatio; // pixels
+const HEIGHT_OF_CANVAS_IN_PIXELS = 450*devicePixelRatio; // pixels
 const WIDTH_OF_GAME_IN_CELLS = 300; // cells
 const HEIGHT_OF_GAME_IN_CELLS = 150; // cells
 const DEFAULT_ANIMATION_DELAY = 100; // ms
@@ -21,7 +21,7 @@ class Grid {
 		this.canvas.style.height = height/dpr + "px";
 		this.canvas.style.borderStyle = "solid";
 		this.canvas.style.borderWidth = "1px";
-		this.ctx.scale(2,2);
+		this.ctx.scale(dpr,dpr);
 		document.getElementById(parentID).appendChild(this.canvas);
 	}
 
@@ -103,13 +103,11 @@ class Game {
 		cellSize,
 		delay
 	){
-		this.widthInCells = widthInCells+100;
-		this.heightInCells = heightInCells+100;
+		this.widthInCells = widthInCells+500;
+		this.heightInCells = heightInCells+500;
 		this.widthInPixels = widthInPixels;
 		this.heightInPixels = heightInPixels;
 		this.cellSize = cellSize;
-
-		//this.viewingRectangle = this.getViewingRectangle();
 
 		this.bitmap = this.makeEmptyBitmap(true);
 		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, 'gol');
@@ -117,12 +115,12 @@ class Game {
 		let cells = this.getCells(this.bitmap);
 		this.grid.updateChangedCells(cells);
 		
-		//this.grid.addEventListener('click', this.handleCellClick);
 		this.grid.addEventListener('wheel', this.handleWheel);
 		this.grid.addEventListener('mousedown', this.handleMouseDown);
 		this.grid.addEventListener('mouseup', this.handleMouseUp);
 		this.grid.addEventListener('mousemove', this.handleMouseMove);
-		document.addEventListener('keydown', this.handleKeyPress);
+		this.grid.addEventListener('mouseleave', this.handleMouseLeave);
+		//document.addEventListener('keydown', this.handleKeyPress);
 
 		this.delay = delay;
 		this.running = false;
@@ -139,8 +137,8 @@ class Game {
 
 	viewRecDim(){
 		return {
-			w: Math.floor(this.widthInPixels/this.cellSize/2),
-			h: Math.floor(this.heightInPixels/this.cellSize/2)
+			w: Math.floor(this.widthInPixels/this.cellSize/devicePixelRatio),
+			h: Math.floor(this.heightInPixels/this.cellSize/devicePixelRatio)
 		}
 	}
 
@@ -176,7 +174,7 @@ class Game {
 			vr.right <= this.widthInCells &&
 			vr.bottom <= this.heightInCells
 		){
-			console.log(vr);
+			
 
 			this.viewingRectangle = {
 				left: vr.left,
@@ -191,6 +189,10 @@ class Game {
 
 	}
 
+	handleMouseLeave = (event) => {
+		this.mousedownPosition = null;
+	}
+
 	handleKeyPress = (event) => {
 		console.log(event);
 	}
@@ -203,6 +205,8 @@ class Game {
 
 	mouseupPosition = null;
 	handleMouseUp = (event) => {
+		if(!this.mousedownPosition)return;
+		
 		this.mouseupPosition = this.grid.eventCoordinants(event);
 
 		let drag = (
@@ -307,6 +311,16 @@ class Game {
 	handleCellClick = (event) => {
 		let square = this.grid.eventCoordinants(event);
 		let vr = this.getViewingRectangle();
+		let cellLoc = {
+			x: square.x + vr.left,
+			y: square.y + vr.top
+		}
+
+		if (
+			cellLoc.x >= this.widthInCells || 
+			cellLoc.y >= this.heightInCells
+		)return;
+
 		let cell = this.bitmap[square.y+vr.top][square.x+vr.left];
 		cell.alive = !cell.alive
 		this.updateNeighbors(square.x+vr.left, square.y+vr.top, this.bitmap, cell.alive)
@@ -396,9 +410,9 @@ class Game {
 		let vr = this.getViewingRectangle();
 		let cells = []
 		
-		//console.log({x: this.bitmap[0].length, y: this.bitmap.length})
-		for(let i = vr.top; i < vr.bottom; i++){
-			for(let j = vr.left; j < vr.right; j++){
+		for(let i = vr.top; i <= vr.bottom; i++){
+			for(let j = vr.left; j <= vr.right; j++){
+				if (i == this.heightInCells || j == this.widthInCells)break;
 				if (bitmap[i][j].alive){
 					cells[cells.length] = {
 						x:j-vr.left,
@@ -450,6 +464,7 @@ class Game {
 			y <= vr.bottom
 		);
 	}
+
 	nextBitmap(){
 		let nextBitmap = this.deepCopyBitmap();
 		let vr = this.getViewingRectangle();
