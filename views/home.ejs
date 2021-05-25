@@ -206,7 +206,7 @@
                             <a href="/projects/gameoflife" target="_blank"><h3 class="mb-0">Game Of Life</h3></a>
                             <!--<a onclick="$('#gameOfLifeApp').slideToggle(200);"><h3 class="mb-0">Game Of Life</h3></a>-->
                             <div class="subheading mb-3">Tools: React</div>
-                            <p><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Conways Game of Life</a> is a <i>game</i> where cells in a grid live or die based on simple rules. It is an example of a cellular automaton. I wrote this as a way to familiarize myself with the React JavaScript Library.</p>
+                            <p><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Conways Game of Life</a> is a <i>game</i> where cells in a grid live or die based on simple rules. It is an example of a cellular automaton. I have implemented this game in other languages, but built it in javaScript as a way to practice with the language, and so that I can show it off online. Try scolling up or down on the field of play! You'll find that you can zoom in and out on a very large 'world'. You can also drag the view across the world. In order to support so many cells I had to take advantage of certain efficiencies. When calculating what the next generation of cells will be, the program only considers those cells that are liable to change, i.e. dead cells with exactly three neighbors, and live cells whose neighbor count is not 2 or 3. As actually rendering the state of the game is the most expensive opperation, the real performance gains come from only re-painting those cells that have changed from the last generation.  </p>
                         </div>
                     </div>
 
