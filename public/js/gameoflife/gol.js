@@ -116,11 +116,11 @@ class Game {
 		this.heightInPixels = heightInPixels;
 		this.cellSize = cellSize;
 
-		//this.bitmap = this.makeEmptyBitmap(true);
+		this.bitmap = this.makeEmptyBitmap(true);
 		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, 'gol');
-		//this.grid.blankGrid();
-		//let cells = this.getCells(this.bitmap);
-		//this.grid.updateChangedCells(cells);
+		this.grid.blankGrid();
+		let cells = this.getCells(this.bitmap);
+		this.grid.updateChangedCells(cells);
 		
 		this.grid.addEventListener('wheel', this.handleWheel);
 		this.grid.addEventListener('mousedown', this.handleMouseDown);
@@ -141,94 +141,9 @@ class Game {
 		this.random.addEventListener('click', this.handleRandom);
 		document.getElementById("gol").appendChild(this.random);
 
-		/* Experimenting with Edwins ideas */
-		//this.neighbors = [];
-		this.cells = this.makeRandomCells();
-		this.grid.drawCells(this.cells);
-		/* end */
-	}
-
-	ops = 0;
-	incrementNeighbor(x, y){
-		for ( let i = 0; i < this.neighbors.length; i++ ){
-			this.ops++;
-			let n = this.neighbors[i];
-			if (n.x == x && n.y == y){
-				n.count ++;
-				return;
-			}
-		}
-
-		this.neighbors.push({
-			x:x,
-			y:y,
-			count:1
-		});
-	}
-
-	getNeighbors(){
-		this.neighbors = [];
-		console.log(this.cells.length);
-		for ( let i = 0; i < this.cells.length; i++ ){
-			console.log("test1")
-			let cell = this.cells[i];
-			this.incrementNeighbor(cell.x-1, cell.y-1);
-			this.incrementNeighbor(cell.x-1, cell.y+1);
-			this.incrementNeighbor(cell.x+1, cell.y-1);
-			this.incrementNeighbor(cell.x+1, cell.y+1);
-			this.incrementNeighbor(cell.x  , cell.y-1);
-			this.incrementNeighbor(cell.x  , cell.y+1);
-			this.incrementNeighbor(cell.x-1, cell.y  );
-			this.incrementNeighbor(cell.x+1, cell.y  );
-		}
-	}
-
-	nextCells(){
 		
-		let nextCells = [];
-		this.getNeighbors();
-		
-
-		for (let i = 0; i < this.cells.length; i++){
-			for (let j = 0; j < this.neighbors.length; j++){
-				let cell = this.cells[i];
-				let n = this.neighbors[j];
-				if ( n.x == cell.x && n.y == cell.y && n.count == 2){
-					n.count = 3;
-				}
-			}
-		}
-		
-
-		for ( let i = 0; i < this.neighbors.length; i++ ){
-			let n = this.neighbors[i];
-			if ( n.count == 3 ){
-				nextCells[nextCells.length] = {
-					x:n.x,
-					y:n.y,
-					alive:true
-				}
-			}
-		}
-		
-		this.cells = nextCells;
 	}
 
-	makeRandomCells(){
-		let cells = [];
-		for ( let i = 0; i < 10; i++){
-			for ( let j = 0; j < 10; j++ ){
-				if (Math.random() > 0.75){
-					cells[cells.length] = { 
-						x:j,
-						y:i,
-						alive: true
-					}
-				}
-			}
-		}
-		return cells;
-	}
 
 	viewRecDim(){
 		return {
@@ -436,7 +351,7 @@ class Game {
 	}
 
 	run(){
-		/*
+		
 		this.running = true;
 		const calc0 = performance.now();
 		let next = this.nextBitmap();
@@ -453,11 +368,6 @@ class Game {
 		}
 
 		console.log(time);
-		*/
-		this.running = true;
-		this.nextCells();
-		//console.log(this.cells.length);
-		this.grid.drawCells(this.cells);
 
 		this.timeoutHandler = window.setTimeout(()=>{
 			this.run();
