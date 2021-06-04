@@ -92,6 +92,13 @@ class Grid {
 		});
 	}
 
+	drawCells(cells){
+		this.blankGrid();
+		cells.map((change)=>{
+			this.drawCell(change.x, change.y, change.alive);
+		});
+	}
+
 }
 
 class Game {
@@ -103,17 +110,17 @@ class Game {
 		cellSize,
 		delay
 	){
-		this.widthInCells = widthInCells+500;
-		this.heightInCells = heightInCells+500;
+		this.widthInCells = widthInCells+1000;
+		this.heightInCells = heightInCells+1000;
 		this.widthInPixels = widthInPixels;
 		this.heightInPixels = heightInPixels;
 		this.cellSize = cellSize;
 
-		this.bitmap = this.makeEmptyBitmap(true);
+		//this.bitmap = this.makeEmptyBitmap(true);
 		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, 'gol');
-		this.grid.blankGrid();
-		let cells = this.getCells(this.bitmap);
-		this.grid.updateChangedCells(cells);
+		//this.grid.blankGrid();
+		//let cells = this.getCells(this.bitmap);
+		//this.grid.updateChangedCells(cells);
 		
 		this.grid.addEventListener('wheel', this.handleWheel);
 		this.grid.addEventListener('mousedown', this.handleMouseDown);
@@ -133,6 +140,94 @@ class Game {
 		this.random.innerHTML = "Random";
 		this.random.addEventListener('click', this.handleRandom);
 		document.getElementById("gol").appendChild(this.random);
+
+		/* Experimenting with Edwins ideas */
+		//this.neighbors = [];
+		this.cells = this.makeRandomCells();
+		this.grid.drawCells(this.cells);
+		/* end */
+	}
+
+	ops = 0;
+	incrementNeighbor(x, y){
+		for ( let i = 0; i < this.neighbors.length; i++ ){
+			this.ops++;
+			let n = this.neighbors[i];
+			if (n.x == x && n.y == y){
+				n.count ++;
+				return;
+			}
+		}
+
+		this.neighbors.push({
+			x:x,
+			y:y,
+			count:1
+		});
+	}
+
+	getNeighbors(){
+		this.neighbors = [];
+		console.log(this.cells.length);
+		for ( let i = 0; i < this.cells.length; i++ ){
+			console.log("test1")
+			let cell = this.cells[i];
+			this.incrementNeighbor(cell.x-1, cell.y-1);
+			this.incrementNeighbor(cell.x-1, cell.y+1);
+			this.incrementNeighbor(cell.x+1, cell.y-1);
+			this.incrementNeighbor(cell.x+1, cell.y+1);
+			this.incrementNeighbor(cell.x  , cell.y-1);
+			this.incrementNeighbor(cell.x  , cell.y+1);
+			this.incrementNeighbor(cell.x-1, cell.y  );
+			this.incrementNeighbor(cell.x+1, cell.y  );
+		}
+	}
+
+	nextCells(){
+		
+		let nextCells = [];
+		this.getNeighbors();
+		
+
+		for (let i = 0; i < this.cells.length; i++){
+			for (let j = 0; j < this.neighbors.length; j++){
+				let cell = this.cells[i];
+				let n = this.neighbors[j];
+				if ( n.x == cell.x && n.y == cell.y && n.count == 2){
+					n.count = 3;
+				}
+			}
+		}
+		
+
+		for ( let i = 0; i < this.neighbors.length; i++ ){
+			let n = this.neighbors[i];
+			if ( n.count == 3 ){
+				nextCells[nextCells.length] = {
+					x:n.x,
+					y:n.y,
+					alive:true
+				}
+			}
+		}
+		
+		this.cells = nextCells;
+	}
+
+	makeRandomCells(){
+		let cells = [];
+		for ( let i = 0; i < 10; i++){
+			for ( let j = 0; j < 10; j++ ){
+				if (Math.random() > 0.75){
+					cells[cells.length] = { 
+						x:j,
+						y:i,
+						alive: true
+					}
+				}
+			}
+		}
+		return cells;
 	}
 
 	viewRecDim(){
@@ -168,25 +263,31 @@ class Game {
 
 	setViewingRectangle(vr){
 		// vr should be a modified copy of this.getViewingRectangle()
-		if (
-			vr.left >= 0 &&
-			vr.top  >= 0 &&
-			vr.right <= this.widthInCells &&
-			vr.bottom <= this.heightInCells
-		){
-			
+		let w = vr.right - vr.left;
+		let h = vr.bottom - vr.top;
 
-			this.viewingRectangle = {
-				left: vr.left,
-				top: vr.top,
-				right:vr.right,
-				bottom:vr.bottom
-			}
-			return true;
-		}else{
-			return false;
+		if ( vr.left <= 0 ) {
+			vr.left = 0;
+			vr.right = vr.left + w;
 		}
-
+		if ( vr.right >= this.widthInCells ) {
+			vr.right = this.widthInCells;
+			vr.left = vr.right - w;
+		}
+		if ( vr.top <= 0 ) {
+			vr.top = 0;
+			vr.bottom = vr.top + h;
+		}
+		if ( vr.bottom >= this.heightInCells) {
+			vr.bottom = this.heightInCells;
+			vr.top = vr.bottom - h;
+		}
+		this.viewingRectangle = {
+			left: vr.left,
+			top: vr.top,
+			right:vr.right,
+			bottom:vr.bottom
+		}
 	}
 
 	handleMouseLeave = (event) => {
@@ -249,8 +350,8 @@ class Game {
 		vr.top -= delta.y;
 		vr.right -= delta.x;
 		vr.bottom -= delta.y;
-		if(this.setViewingRectangle(vr)) 
-			this.redrawGrid();
+		this.setViewingRectangle(vr)
+		this.redrawGrid();
 	}
 
 	redrawGrid(){
@@ -285,21 +386,7 @@ class Game {
 		vr.top = center.y - Math.floor(newDim.h/2);
 		vr.bottom = center.y + Math.floor(newDim.h/2);
 
-		this.setViewingRectangle(vr);
-
-		//let newDim = this.viewRecDim();
-		//let oldDim = {
-		//	w: vr.right - vr.left,
-		//	h: vr.bottom - vr.top
-		//}
-
-		//vr.left -= Math.floor((newDim.w - oldDim.w) / 2);
-		//vr.right -= Math.floor((newDim.w - oldDim.w) / 2);
-		//vr.top += Math.floor((newDim.h - oldDim.h) / 2);
-		//vr.bottom += Math.floor((newDim.h - oldDim.h) / 2);
-
-
-		//if (this.setViewingRectangle(vr)) this.redrawGrid();
+		let scaled = this.setViewingRectangle(vr);
 		this.redrawGrid();
 	}
 
@@ -340,6 +427,7 @@ class Game {
 	}
 
 	handleRunPause = () => {
+		console.log("run")
 		let running = this.running;
 		this.running = !running;
 		this.setRunPauseButtonText();
@@ -348,13 +436,28 @@ class Game {
 	}
 
 	run(){
+		/*
 		this.running = true;
-		const t = performance.now();
+		const calc0 = performance.now();
 		let next = this.nextBitmap();
 		this.bitmap = next.nextBitmap;
+		const calc1 = performance.now();
+
+		const rend0 = performance.now();
 		this.grid.updateChangedCells(next.changes);
-		const t1 = performance.now();
-		console.log(t1-t)
+		const rend1 = performance.now();
+		
+		let time = {
+			calc: Math.floor(calc1 - calc0),
+			rend: Math.floor(rend1 - rend0)
+		}
+
+		console.log(time);
+		*/
+		this.running = true;
+		this.nextCells();
+		//console.log(this.cells.length);
+		this.grid.drawCells(this.cells);
 
 		this.timeoutHandler = window.setTimeout(()=>{
 			this.run();
@@ -493,6 +596,7 @@ class Game {
 			}
 		}
 		
+		console.log(this.getCells(nextBitmap).length);
 		return {nextBitmap, changes};
 	}
 }
