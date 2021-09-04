@@ -2,8 +2,8 @@ const ALIVE_COLOR = "#90c482";
 const DEAD_COLOR = "white";
 const WIDTH_OF_CANVAS_IN_PIXELS = 900*devicePixelRatio; // pixels
 const HEIGHT_OF_CANVAS_IN_PIXELS = 450*devicePixelRatio; // pixels
-const WIDTH_OF_GAME_IN_CELLS = 300; // cells
-const HEIGHT_OF_GAME_IN_CELLS = 150; // cells
+const WIDTH_OF_GAME_IN_CELLS = 1300; // cells
+const HEIGHT_OF_GAME_IN_CELLS = 1150; // cells
 const DEFAULT_ANIMATION_DELAY = 100; // ms
 const DEFAULT_CELL_SIZE = 15; // pixels
 const MIN_CELL_SIZE = 3; // pixels
@@ -101,45 +101,64 @@ class Grid {
 
 }
 
-class Game {
+class Controls{
+	constructor(parentID){
+		this.controls = document.createElement("div");
+		this.runPause = document.createElement("button");
+		this.random = document.createElement("button");
+		this.clear = document.createElement("button");
+		this.clear.innerHTML = "Clear";
+		this.runPause.innerHTML = "Run";
+		this.random.innerHTML = "Random";
+
+		document.getElementById(parentID).appendChild(this.canvas);
+		this.controls.appendChild(this.runPause);
+		this.controls.appendChild(this.random);
+		this.controls.appendChild(this.clear);
+	}
+}
+
+class GameOfLife {
 	constructor(
 		widthInPixels, 
 		heightInPixels,
 		widthInCells,
 		heightInCells,
 		cellSize,
-		delay
+		delay, 
+		parentID
 	){
-		this.widthInCells = widthInCells+1000;
-		this.heightInCells = heightInCells+1000;
+		this.widthInCells = widthInCells;
+		this.heightInCells = heightInCells;
 		this.widthInPixels = widthInPixels;
 		this.heightInPixels = heightInPixels;
 		this.cellSize = cellSize;
+		this.delay = delay;
+		this.running = false;
 
 		this.bitmap = this.makeEmptyBitmap(true);
-		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, 'gol');
+
+		this.grid = new Grid(widthInPixels, heightInPixels, cellSize, parentID);
 		this.grid.blankGrid();
-		let cells = this.getCells(this.bitmap);
-		this.grid.updateChangedCells(cells);
+		this.grid.updateChangedCells(this.getCells(this.bitmap));
 		
 		this.grid.addEventListener('wheel', this.handleWheel);
 		this.grid.addEventListener('mousedown', this.handleMouseDown);
 		this.grid.addEventListener('mouseup', this.handleMouseUp);
 		this.grid.addEventListener('mousemove', this.handleMouseMove);
 		this.grid.addEventListener('mouseleave', this.handleMouseLeave);
-		//document.addEventListener('keydown', this.handleKeyPress);
 
-		this.delay = delay;
-		this.running = false;
-		this.runPause = document.createElement("button");
-		this.runPause.innerHTML = "Run";
-		this.runPause.addEventListener('click', this.handleRunPause);
-		document.getElementById("gol").appendChild(this.runPause);
+		//this.runPause = document.createElement("button");
+		//this.runPause.innerHTML = "Run";
+		//this.runPause.addEventListener('click', this.handleRunPause);
+		//document.getElementById("gol").appendChild(this.runPause);
 
-		this.random = document.createElement("button");
-		this.random.innerHTML = "Random";
-		this.random.addEventListener('click', this.handleRandom);
-		document.getElementById("gol").appendChild(this.random);
+		//this.random = document.createElement("button");
+		//this.random.innerHTML = "Random";
+		//this.random.addEventListener('click', this.handleRandom);
+		//document.getElementById("gol").appendChild(this.random);
+
+		this.controls = new Controls(parentID);
 
 		
 	}
@@ -506,17 +525,17 @@ class Game {
 			}
 		}
 		
-		console.log(this.getCells(nextBitmap).length);
 		return {nextBitmap, changes};
 	}
 }
 
-game = new Game(
+gol = new GameOfLife(
 	WIDTH_OF_CANVAS_IN_PIXELS,
 	HEIGHT_OF_CANVAS_IN_PIXELS,
 	WIDTH_OF_GAME_IN_CELLS,
 	HEIGHT_OF_GAME_IN_CELLS,
 	DEFAULT_CELL_SIZE,
-	DEFAULT_ANIMATION_DELAY
+	DEFAULT_ANIMATION_DELAY,
+	'gol'
 );
 
