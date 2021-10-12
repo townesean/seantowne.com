@@ -5,6 +5,8 @@ const HEIGHT_OF_CANVAS_IN_PIXELS = 450*devicePixelRatio; // pixels
 const WIDTH_OF_GAME_IN_CELLS = 1300; // cells
 const HEIGHT_OF_GAME_IN_CELLS = 1150; // cells
 const DEFAULT_ANIMATION_DELAY = 100; // ms
+const SLOWEST_ANIMATION_DELAY = 1000;
+const FASTEST_ANIMATION_DELAY = 30;
 const DEFAULT_CELL_SIZE = 15; // pixels
 const MIN_CELL_SIZE = 3; // pixels
 const MAX_CELL_SIZE = 50; // pixels
@@ -107,14 +109,19 @@ class Controls{
 		this.runPause = document.createElement("button");
 		this.random = document.createElement("button");
 		this.clear = document.createElement("button");
+		this.speed = document.createElement("input");
+		this.speed.type = "range";
+		this.speed.min = 0;
+		this.speed.max = 100;
 		this.clear.innerHTML = "Clear";
 		this.runPause.innerHTML = "Run";
 		this.random.innerHTML = "Random";
 
-		document.getElementById(parentID).appendChild(this.canvas);
+		document.getElementById(parentID).appendChild(this.controls);
 		this.controls.appendChild(this.runPause);
 		this.controls.appendChild(this.random);
 		this.controls.appendChild(this.clear);
+		this.controls.appendChild(this.speed);
 	}
 }
 
@@ -159,7 +166,10 @@ class GameOfLife {
 		//document.getElementById("gol").appendChild(this.random);
 
 		this.controls = new Controls(parentID);
-
+		this.controls.runPause.addEventListener('click', this.handleRunPause);
+		this.controls.random.addEventListener('click', this.handleRandom);
+		this.controls.clear.addEventListener('click', this.handleClearClick);
+		this.controls.speed.addEventListener('change', this.handleSpeedChange);
 		
 	}
 
@@ -222,6 +232,16 @@ class GameOfLife {
 			right:vr.right,
 			bottom:vr.bottom
 		}
+	}
+
+	handleSpeedChange = (event) => {
+		let delayRange = SLOWEST_ANIMATION_DELAY - FASTEST_ANIMATION_DELAY;
+		let rangeBarPercentFull = event.target.value / 100.0 
+		let placeInRange = rangeBarPercentFull * delayRange;
+		this.delay = SLOWEST_ANIMATION_DELAY - placeInRange
+		
+		console.log(this.delay)
+
 	}
 
 	handleMouseLeave = (event) => {
@@ -351,7 +371,7 @@ class GameOfLife {
 
 	setRunPauseButtonText(){
 		let text = this.running? "Pause":"Run";
-		this.runPause.innerHTML = text;
+		this.controls.runPause.innerHTML = text;
 	}
 
 	handleRandom = () => {
@@ -397,6 +417,12 @@ class GameOfLife {
 		this.running = false;
 		window.clearTimeout(this.timeoutHandler);
 		this.timeoutHandler = null;
+	}
+
+	handleClearClick = () => {
+		this.bitmap = this.makeEmptyBitmap(false);
+		this.grid.blankGrid();
+		this.grid.updateChangedCells(this.getCells(this.bitmap));
 	}
 
 	makeEmptyBitmap(random){
